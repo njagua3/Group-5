@@ -7,9 +7,9 @@ export default function AdminDashboard() {
   const [properties, setProperties] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [newTenant, setNewTenant] = useState({ tenant_name: '', tenant_phone_number: '', house_number: '' });
-  const [newLandlord, setNewLandlord] = useState({ landlord_name: '', phone_number: '', property_name: '' });
-  const [newProperty, setNewProperty] = useState({ property_name: '', location: '', types_of_houses: '', is_occupied: false });
+  const [newTenant, setNewTenant] = useState({ tenant_name: '', tenant_phone_number: '', house_number: '', email: '', age: '' });
+  const [newLandlord, setNewLandlord] = useState({ landlord_name: '', phone_number: '', property_name: '', email: '' });
+  const [newProperty, setNewProperty] = useState({ property_name: '', location: '', types_of_houses: '', is_occupied: false, price: '', size: '' });
 
   const [editingTenant, setEditingTenant] = useState(null);
   const [editingLandlord, setEditingLandlord] = useState(null);
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     try {
       await axios.post('http://localhost:5000/tenants', newTenant);
-      setNewTenant({ tenant_name: '', tenant_phone_number: '', house_number: '' });
+      setNewTenant({ tenant_name: '', tenant_phone_number: '', house_number: '', email: '', age: '' });
       fetchData();
     } catch (error) {
       console.error('Error creating tenant', error);
@@ -58,7 +58,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     try {
       await axios.post('http://localhost:5000/landlords', newLandlord);
-      setNewLandlord({ landlord_name: '', phone_number: '', property_name: '' });
+      setNewLandlord({ landlord_name: '', phone_number: '', property_name: '', email: '' });
       fetchData();
     } catch (error) {
       console.error('Error creating landlord', error);
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     try {
       await axios.post('http://localhost:5000/properties', newProperty);
-      setNewProperty({ property_name: '', location: '', types_of_houses: '', is_occupied: false });
+      setNewProperty({ property_name: '', location: '', types_of_houses: '', is_occupied: false, price: '', size: '' });
       fetchData();
     } catch (error) {
       console.error('Error creating property', error);
@@ -167,271 +167,338 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Tenants Management */}
+// Tenant Management
+<div className="mb-8">
+  <h2 className="text-3xl mb-4">Manage Tenants</h2>
+  <form onSubmit={handleCreateTenant} className="mb-4 flex flex-col md:flex-row">
+    <input
+      type="text"
+      placeholder="Tenant Name"
+      value={newTenant.tenant_name}
+      onChange={(e) => setNewTenant({ ...newTenant, tenant_name: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="Phone Number"
+      value={newTenant.tenant_phone_number}
+      onChange={(e) => setNewTenant({ ...newTenant, tenant_phone_number: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="House Number"
+      value={newTenant.house_number}
+      onChange={(e) => setNewTenant({ ...newTenant, house_number: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="House Type"
+      value={newTenant.house_type}
+      onChange={(e) => setNewTenant({ ...newTenant, house_type: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="Property Name"
+      value={newTenant.property_name}
+      onChange={(e) => setNewTenant({ ...newTenant, property_name: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="number"
+      placeholder="Deposit Paid"
+      value={newTenant.deposit_paid}
+      onChange={(e) => setNewTenant({ ...newTenant, deposit_paid: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="date"
+      placeholder="Payment Date"
+      value={newTenant.payment_date}
+      onChange={(e) => setNewTenant({ ...newTenant, payment_date: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="Receipt Number for Deposit"
+      value={newTenant.receipt_number_deposit}
+      onChange={(e) => setNewTenant({ ...newTenant, receipt_number_deposit: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="number"
+      placeholder="Rent Amount"
+      value={newTenant.rent_amount}
+      onChange={(e) => setNewTenant({ ...newTenant, rent_amount: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="date"
+      placeholder="Due Date"
+      value={newTenant.due_date}
+      onChange={(e) => setNewTenant({ ...newTenant, due_date: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="Rent Receipt Number"
+      value={newTenant.rent_receipt_number}
+      onChange={(e) => setNewTenant({ ...newTenant, rent_receipt_number: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded m-2">
+      Add Tenant
+    </button>
+  </form>
+
+  <table className="min-w-full table-auto bg-white shadow-md rounded-lg">
+    <thead>
+      <tr>
+        <th className="px-4 py-2">Name</th>
+        <th className="px-4 py-2">Phone Number</th>
+        <th className="px-4 py-2">House Number</th>
+        <th className="px-4 py-2">House Type</th>
+        <th className="px-4 py-2">Property Name</th>
+        <th className="px-4 py-2">Deposit Paid</th>
+        <th className="px-4 py-2">Payment Date</th>
+        <th className="px-4 py-2">Receipt Number (Deposit)</th>
+        <th className="px-4 py-2">Rent Amount</th>
+        <th className="px-4 py-2">Due Date</th>
+        <th className="px-4 py-2">Rent Receipt Number</th>
+        <th className="px-4 py-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {tenants.map((tenant) => (
+        <tr key={tenant.id} className="border-b">
+          <td className="border px-4 py-2">
+            {editingTenant?.id === tenant.id ? (
+              <input
+                value={editingTenant.tenant_name}
+                onChange={(e) => setEditingTenant({ ...editingTenant, tenant_name: e.target.value })}
+                className="border p-2"
+              />
+            ) : (
+              tenant.tenant_name
+            )}
+          </td>
+          <td className="border px-4 py-2">{tenant.tenant_phone_number}</td>
+          <td className="border px-4 py-2">{tenant.house_number}</td>
+          <td className="border px-4 py-2">{tenant.house_type}</td>
+          <td className="border px-4 py-2">{tenant.property_name}</td>
+          <td className="border px-4 py-2">{tenant.deposit_paid}</td>
+          <td className="border px-4 py-2">{tenant.payment_date}</td>
+          <td className="border px-4 py-2">{tenant.receipt_number_deposit}</td>
+          <td className="border px-4 py-2">{tenant.rent_amount}</td>
+          <td className="border px-4 py-2">{tenant.due_date}</td>
+          <td className="border px-4 py-2">{tenant.rent_receipt_number}</td>
+          <td className="border px-4 py-2">
+            {editingTenant?.id === tenant.id ? (
+              <button
+                onClick={() => handleUpdateTenant(tenant.id)}
+                className="bg-blue-600 text-white px-4 py-2 rounded m-2"
+              >
+                Save
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => setEditingTenant({ id: tenant.id, tenant_name: tenant.tenant_name })}
+                  className="bg-yellow-400 text-white px-4 py-2 rounded m-2"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteTenant(tenant.id)}
+                  className="bg-red-600 text-white px-4 py-2 rounded m-2"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+  // Landlord Management
+<div className="mb-8">
+  <h2 className="text-3xl mb-4">Manage Landlords</h2>
+  <form onSubmit={handleCreateLandlord} className="mb-4 flex flex-col md:flex-row">
+    <input
+      type="text"
+      placeholder="Landlord Name"
+      value={newLandlord.landlord_name}
+      onChange={(e) => setNewLandlord({ ...newLandlord, landlord_name: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="Phone Number"
+      value={newLandlord.phone_number}
+      onChange={(e) => setNewLandlord({ ...newLandlord, phone_number: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <input
+      type="text"
+      placeholder="Properties Owned"
+      value={newLandlord.properties_owned}
+      onChange={(e) => setNewLandlord({ ...newLandlord, properties_owned: e.target.value })}
+      className="border p-2 m-2 flex-grow"
+    />
+    <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded m-2">
+      Add Landlord
+    </button>
+  </form>
+
+  <table className="min-w-full table-auto bg-white shadow-md rounded-lg">
+    <thead>
+      <tr>
+        <th className="px-4 py-2">Landlord Name</th>
+        <th className="px-4 py-2">Phone Number</th>
+        <th className="px-4 py-2">Properties Owned</th>
+        <th className="px-4 py-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {landlords.map((landlord) => (
+        <tr key={landlord.id} className="border-b">
+          <td className="border px-4 py-2">
+            {editingLandlord?.id === landlord.id ? (
+              <input
+                value={editingLandlord.landlord_name}
+                onChange={(e) => setEditingLandlord({ ...editingLandlord, landlord_name: e.target.value })}
+                className="border p-2"
+              />
+            ) : (
+              landlord.landlord_name
+            )}
+          </td>
+          <td className="border px-4 py-2">{landlord.phone_number}</td>
+          <td className="border px-4 py-2">{landlord.properties_owned}</td>
+          <td className="border px-4 py-2">
+            {editingLandlord?.id === landlord.id ? (
+              <button
+                onClick={() => handleUpdateLandlord(landlord.id)}
+                className="bg-blue-600 text-white px-4 py-2 rounded m-2"
+              >
+                Save
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => setEditingLandlord({ id: landlord.id, landlord_name: landlord.landlord_name })}
+                  className="bg-yellow-400 text-white px-4 py-2 rounded m-2"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteLandlord(landlord.id)}
+                  className="bg-red-600 text-white px-4 py-2 rounded m-2"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+
+      {/* Properties Management */}
       <div className="mb-8">
-        <h2 className="text-3xl mb-4">Manage Tenants</h2>
-        <form onSubmit={handleCreateTenant} className="mb-4 flex flex-col md:flex-row">
+        <h2 className="text-3xl mb-4">Manage Properties</h2>
+        <form onSubmit={handleCreateProperty} className="mb-4 flex flex-col md:flex-row">
           <input
             type="text"
-            placeholder="Tenant Name"
-            value={newTenant.tenant_name}
-            onChange={(e) => setNewTenant({ ...newTenant, tenant_name: e.target.value })}
+            placeholder="Property Name"
+            value={newProperty.property_name}
+            onChange={(e) => setNewProperty({ ...newProperty, property_name: e.target.value })}
             className="border p-2 m-2 flex-grow"
           />
           <input
             type="text"
-            placeholder="Phone Number"
-            value={newTenant.tenant_phone_number}
-            onChange={(e) => setNewTenant({ ...newTenant, tenant_phone_number: e.target.value })}
+            placeholder="Location"
+            value={newProperty.location}
+            onChange={(e) => setNewProperty({ ...newProperty, location: e.target.value })}
             className="border p-2 m-2 flex-grow"
           />
           <input
             type="text"
-            placeholder="House Number"
-            value={newTenant.house_number}
-            onChange={(e) => setNewTenant({ ...newTenant, house_number: e.target.value })}
+            placeholder="Types of Houses"
+            value={newProperty.types_of_houses}
+            onChange={(e) => setNewProperty({ ...newProperty, types_of_houses: e.target.value })}
             className="border p-2 m-2 flex-grow"
           />
+          <input
+            type="text"
+            placeholder="Price"
+            value={newProperty.price}
+            onChange={(e) => setNewProperty({ ...newProperty, price: e.target.value })}
+            className="border p-2 m-2 flex-grow"
+          />
+          <input
+            type="text"
+            placeholder="Size"
+            value={newProperty.size}
+            onChange={(e) => setNewProperty({ ...newProperty, size: e.target.value })}
+            className="border p-2 m-2 flex-grow"
+          />
+          <div className="border p-2 m-2 flex-grow">
+            <label>
+              Occupied:
+              <input
+                type="checkbox"
+                checked={newProperty.is_occupied}
+                onChange={(e) => setNewProperty({ ...newProperty, is_occupied: e.target.checked })}
+              />
+            </label>
+          </div>
           <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded m-2">
-            Add Tenant
+            Add Property
           </button>
         </form>
         <table className="min-w-full table-auto bg-white shadow-md rounded-lg">
           <thead>
             <tr>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Phone Number</th>
-              <th className="px-4 py-2">House Number</th>
+              <th className="px-4 py-2">Property Name</th>
+              <th className="px-4 py-2">Location</th>
+              <th className="px-4 py-2">Types of Houses</th>
+              <th className="px-4 py-2">Occupied</th>
+              <th className="px-4 py-2">Price</th>
+              <th className="px-4 py-2">Size</th>
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {tenants.map((tenant) => (
-              <tr key={tenant.id} className="border-b">
+            {properties.map((property) => (
+              <tr key={property.id}>
+                <td className="border px-4 py-2">{property.property_name}</td>
+                <td className="border px-4 py-2">{property.location}</td>
+                <td className="border px-4 py-2">{property.types_of_houses}</td>
+                <td className="border px-4 py-2">{property.is_occupied ? 'Yes' : 'No'}</td>
+                <td className="border px-4 py-2">{property.price}</td>
+                <td className="border px-4 py-2">{property.size}</td>
                 <td className="border px-4 py-2">
-                  {editingTenant?.id === tenant.id ? (
-                    <input
-                      value={editingTenant.tenant_name}
-                      onChange={(e) => setEditingTenant({ ...editingTenant, tenant_name: e.target.value })}
-                      className="border p-2"
-                    />
-                  ) : (
-                    tenant.tenant_name
-                  )}
+                  <button onClick={() => setEditingProperty(property)} className="bg-blue-500 text-white px-2 py-1 rounded mr-1">
+                    Edit
+                  </button>
+                  <button onClick={() => handleDeleteProperty(property.id)} className="bg-red-500 text-white px-2 py-1 rounded">
+                    Delete
+                  </button>
                 </td>
-                <td className="border px-4 py-2">{tenant.tenant_phone_number}</td>
-                <td className="border px-4 py-2">{tenant.house_number}</td>
-                <td className="border px-4 py-2">
-                  {editingTenant?.id === tenant.id ? (
-                    <button
-                    onClick={() => handleUpdateTenant(tenant.id)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded m-2"
-                  >
-                    Save
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setEditingTenant({ id: tenant.id, tenant_name: tenant.tenant_name })}
-                      className="bg-yellow-400 text-white px-4 py-2 rounded m-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTenant(tenant.id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded m-2"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    {/* Landlords Management */}
-    <div className="mb-8">
-      <h2 className="text-3xl mb-4">Manage Landlords</h2>
-      <form onSubmit={handleCreateLandlord} className="mb-4 flex flex-col md:flex-row">
-        <input
-          type="text"
-          placeholder="Landlord Name"
-          value={newLandlord.landlord_name}
-          onChange={(e) => setNewLandlord({ ...newLandlord, landlord_name: e.target.value })}
-          className="border p-2 m-2 flex-grow"
-        />
-        <input
-          type="text"
-          placeholder="Phone Number"
-          value={newLandlord.phone_number}
-          onChange={(e) => setNewLandlord({ ...newLandlord, phone_number: e.target.value })}
-          className="border p-2 m-2 flex-grow"
-        />
-        <input
-          type="text"
-          placeholder="Property Name"
-          value={newLandlord.property_name}
-          onChange={(e) => setNewLandlord({ ...newLandlord, property_name: e.target.value })}
-          className="border p-2 m-2 flex-grow"
-        />
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded m-2">
-          Add Landlord
-        </button>
-      </form>
-      <table className="min-w-full table-auto bg-white shadow-md rounded-lg">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Phone Number</th>
-            <th className="px-4 py-2">Property Name</th>
-            <th className="px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {landlords.map((landlord) => (
-            <tr key={landlord.id} className="border-b">
-              <td className="border px-4 py-2">
-                {editingLandlord?.id === landlord.id ? (
-                  <input
-                    value={editingLandlord.landlord_name}
-                    onChange={(e) => setEditingLandlord({ ...editingLandlord, landlord_name: e.target.value })}
-                    className="border p-2"
-                  />
-                ) : (
-                  landlord.landlord_name
-                )}
-              </td>
-              <td className="border px-4 py-2">{landlord.phone_number}</td>
-              <td className="border px-4 py-2">{landlord.property_name}</td>
-              <td className="border px-4 py-2">
-                {editingLandlord?.id === landlord.id ? (
-                  <button
-                    onClick={() => handleUpdateLandlord(landlord.id)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded m-2"
-                  >
-                    Save
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setEditingLandlord({ id: landlord.id, landlord_name: landlord.landlord_name })}
-                      className="bg-yellow-400 text-white px-4 py-2 rounded m-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteLandlord(landlord.id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded m-2"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-
-    {/* Properties Management */}
-    <div className="mb-8">
-      <h2 className="text-3xl mb-4">Manage Properties</h2>
-      <form onSubmit={handleCreateProperty} className="mb-4 flex flex-col md:flex-row">
-        <input
-          type="text"
-          placeholder="Property Name"
-          value={newProperty.property_name}
-          onChange={(e) => setNewProperty({ ...newProperty, property_name: e.target.value })}
-          className="border p-2 m-2 flex-grow"
-        />
-        <input
-          type="text"
-          placeholder="Location"
-          value={newProperty.location}
-          onChange={(e) => setNewProperty({ ...newProperty, location: e.target.value })}
-          className="border p-2 m-2 flex-grow"
-        />
-        <input
-          type="text"
-          placeholder="Types of Houses"
-          value={newProperty.types_of_houses}
-          onChange={(e) => setNewProperty({ ...newProperty, types_of_houses: e.target.value })}
-          className="border p-2 m-2 flex-grow"
-        />
-        <label className="m-2 flex-grow">
-          <input
-            type="checkbox"
-            checked={newProperty.is_occupied}
-            onChange={(e) => setNewProperty({ ...newProperty, is_occupied: e.target.checked })}
-          />
-          Is Occupied
-        </label>
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded m-2">
-          Add Property
-        </button>
-      </form>
-      <table className="min-w-full table-auto bg-white shadow-md rounded-lg">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Property Name</th>
-            <th className="px-4 py-2">Location</th>
-            <th className="px-4 py-2">Types of Houses</th>
-            <th className="px-4 py-2">Is Occupied</th>
-            <th className="px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {properties.map((property) => (
-            <tr key={property.id} className="border-b">
-              <td className="border px-4 py-2">
-                {editingProperty?.id === property.id ? (
-                  <input
-                    value={editingProperty.property_name}
-                    onChange={(e) => setEditingProperty({ ...editingProperty, property_name: e.target.value })}
-                    className="border p-2"
-                  />
-                ) : (
-                  property.property_name
-                )}
-              </td>
-              <td className="border px-4 py-2">{property.location}</td>
-              <td className="border px-4 py-2">{property.types_of_houses}</td>
-              <td className="border px-4 py-2">{property.is_occupied ? 'Yes' : 'No'}</td>
-              <td className="border px-4 py-2 flex">
-                {editingProperty?.id === property.id ? (
-                  <button
-                    onClick={() => handleUpdateProperty(property.id)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded m-2"
-                  >
-                    Save
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setEditingProperty({ id: property.id, property_name: property.property_name })}
-                      className="bg-yellow-400 text-white px-4 py-2 rounded m-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteProperty(property.id)}
-                      className="bg-red-600 text-white px-4 py-2 rounded m-2"
-                    >
-                      Delete
-                    </button>
-                  </>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-);
+  );
 }
-
