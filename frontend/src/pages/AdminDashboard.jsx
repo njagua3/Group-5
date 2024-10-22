@@ -166,11 +166,10 @@ export default function AdminDashboard() {
           </ul>
         </div>
       )}
-
-// Tenant Management
+    {/*Tenant management*/}
 <div className="mb-8">
   <h2 className="text-3xl mb-4">Manage Tenants</h2>
-  <form onSubmit={handleCreateTenant} className="mb-4 flex flex-col md:flex-row">
+  <form onSubmit={handleCreateTenant} className="mb-4 flex flex-col md:flex-row flex-grow md:w-auto flex-wrap">
     <input
       type="text"
       placeholder="Tenant Name"
@@ -253,21 +252,21 @@ export default function AdminDashboard() {
     </button>
   </form>
 
-  <table className="min-w-full table-auto bg-white shadow-md rounded-lg">
+  <table className="min-w-full table-auto bg-white shadow-md rounded-lg flex-grow md:w-auto table-fixed overflow-x-auto">
     <thead>
       <tr>
-        <th className="px-4 py-2">Name</th>
-        <th className="px-4 py-2">Phone Number</th>
-        <th className="px-4 py-2">House Number</th>
-        <th className="px-4 py-2">House Type</th>
-        <th className="px-4 py-2">Property Name</th>
-        <th className="px-4 py-2">Deposit Paid</th>
-        <th className="px-4 py-2">Payment Date</th>
-        <th className="px-4 py-2">Receipt Number (Deposit)</th>
-        <th className="px-4 py-2">Rent Amount</th>
-        <th className="px-4 py-2">Due Date</th>
-        <th className="px-4 py-2">Rent Receipt Number</th>
-        <th className="px-4 py-2">Actions</th>
+        <th className="w-1/6 px-2 py-2">Name</th>
+        <th className="w-1/6 px-2 py-2">Phone</th>
+        <th className="w-1/12 px-2 py-2">House No.</th>
+        <th className="w-1/12 px-2 py-2">Type</th>
+        <th className="w-1/6 px-2 py-2">Property</th>
+        <th className="w-1/12 px-2 py-2">Deposit</th>
+        <th className="w-1/12 px-2 py-2">Pay Date</th>
+        <th className="w-1/12 px-2 py-2">Rec. No.</th>
+        <th className="w-1/12 px-2 py-2">Rent</th>
+        <th className="w-1/12 px-2 py-2">Due Date</th>
+        <th className="w-1/12 px-2 py-2">Rent Rec. No.</th>
+        <th className="w-1/12 px-2 py-2">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -277,24 +276,24 @@ export default function AdminDashboard() {
             {editingTenant?.id === tenant.id ? (
               <input
                 value={editingTenant.tenant_name}
-                onChange={(e) => setEditingTenant({ ...editingTenant, tenant_name: e.target.value })}
+                onChange={(e) => setEditingTenant({ ...editingTenant, tenant_name: e.target.value})}
                 className="border p-2"
               />
             ) : (
               tenant.tenant_name
             )}
           </td>
-          <td className="border px-4 py-2">{tenant.tenant_phone_number}</td>
-          <td className="border px-4 py-2">{tenant.house_number}</td>
-          <td className="border px-4 py-2">{tenant.house_type}</td>
-          <td className="border px-4 py-2">{tenant.property_name}</td>
-          <td className="border px-4 py-2">{tenant.deposit_paid}</td>
-          <td className="border px-4 py-2">{tenant.payment_date}</td>
-          <td className="border px-4 py-2">{tenant.receipt_number_deposit}</td>
-          <td className="border px-4 py-2">{tenant.rent_amount}</td>
-          <td className="border px-4 py-2">{tenant.due_date}</td>
-          <td className="border px-4 py-2">{tenant.rent_receipt_number}</td>
-          <td className="border px-4 py-2">
+          <td className="border px-2 py-2">{tenant.tenant_phone_number}</td>
+          <td className="border px-2 py-2">{tenant.house_number}</td>
+          <td className="border px-2 py-2">{tenant.house_type}</td>
+          <td className="border px-2 py-2">{tenant.property_name}</td>
+          <td className="border px-2 py-2">{tenant.deposit_paid}</td>
+          <td className="border px-2 py-2">{tenant.payment_date}</td>
+          <td className="border px-2 py-2">{tenant.receipt_number_deposit}</td>
+          <td className="border px-2 py-2">{tenant.rent_amount}</td>
+          <td className="border px-2 py-2">{tenant.due_date}</td>
+          <td className="border px-2 py-2">{tenant.rent_receipt_number}</td>
+          <td className="border px-2 py-2 flex">
             {editingTenant?.id === tenant.id ? (
               <button
                 onClick={() => handleUpdateTenant(tenant.id)}
@@ -325,10 +324,10 @@ export default function AdminDashboard() {
   </table>
 </div>
 
-  // Landlord Management
+{/* Landlord Management*/}
 <div className="mb-8">
   <h2 className="text-3xl mb-4">Manage Landlords</h2>
-  <form onSubmit={handleCreateLandlord} className="mb-4 flex flex-col md:flex-row">
+  <form onSubmit={handleCreateLandlord} className="mb-4 flex flex-col md:flex-row flex-grow md:w-auto flex-wrap">
     <input
       type="text"
       placeholder="Landlord Name"
@@ -380,7 +379,7 @@ export default function AdminDashboard() {
           </td>
           <td className="border px-4 py-2">{landlord.phone_number}</td>
           <td className="border px-4 py-2">{landlord.properties_owned}</td>
-          <td className="border px-4 py-2">
+          <td className="border px-4 py-2 flex">
             {editingLandlord?.id === landlord.id ? (
               <button
                 onClick={() => handleUpdateLandlord(landlord.id)}
@@ -415,7 +414,7 @@ export default function AdminDashboard() {
       {/* Properties Management */}
       <div className="mb-8">
         <h2 className="text-3xl mb-4">Manage Properties</h2>
-        <form onSubmit={handleCreateProperty} className="mb-4 flex flex-col md:flex-row">
+        <form onSubmit={handleCreateProperty} className="mb-4 flex flex-col md:flex-row flex-grow md:w-auto flex-wrap ">
           <input
             type="text"
             placeholder="Property Name"
@@ -486,7 +485,7 @@ export default function AdminDashboard() {
                 <td className="border px-4 py-2">{property.is_occupied ? 'Yes' : 'No'}</td>
                 <td className="border px-4 py-2">{property.price}</td>
                 <td className="border px-4 py-2">{property.size}</td>
-                <td className="border px-4 py-2">
+                <td className="border px-4 py-2 flex">
                   <button onClick={() => setEditingProperty(property)} className="bg-blue-500 text-white px-2 py-1 rounded mr-1">
                     Edit
                   </button>
